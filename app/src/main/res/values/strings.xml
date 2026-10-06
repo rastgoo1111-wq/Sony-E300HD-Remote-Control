@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RASTA IR Remote v9</string>
+    <string name="ir_status_ok">✓ IR Emitter Ready</string>
+    <string name="ir_status_missing">✗ No IR Emitter</string>
+    <string name="onkyo_title">Onkyo CR-185 / RC-332S</string>
+    <string name="sony_title">Sony CMT-E300HD / RM-E02D</string>
+    <string name="jvc_title">Victor JVC NX-TC5-B / RM-SNXTC5-S</string>
+    <string name="pioneer_title">Pioneer P700 / CU-AP015</string>
+</resources>

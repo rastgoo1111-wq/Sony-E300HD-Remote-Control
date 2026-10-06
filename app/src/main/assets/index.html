@@ -1,0 +1,60 @@
+<!doctype html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>RASTA v9 - IR Remote</title><style>
+*{box-sizing:border-box}body{margin:0;background:#080a0d;color:#f4f4f4;font-family:sans-serif}main{max-width:820px;margin:auto;padding:12px}h2{color:#d6a43a;margin:10px 0}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0}.tab,.btn{padding:11px;border-radius:11px;border:1px solid #303943;background:#151a20;color:#eee}.tab.active{border-color:#d6a43a;color:#d6a43a}.panel{background:#11151a;border:1px solid #252c33;border-radius:14px;padding:11px;margin:9px 0}.title{color:#d6a43a;font-weight:bold;margin-bottom:9px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.btn{min-height:45px;cursor:pointer}.btn.ok{border-color:#3d9b78}.btn.cand{border-color:#547cae;color:#a9c8ec}.btn.warn{border-color:#765e2a;color:#e0c46b}.btn.danger{border-color:#873f3f;color:#e7a3a3}.btn.unknown{border-color:#554444;color:#d4a5a5}.small{font-size:11px;color:#9ba3ad;line-height:1.7}.hidden{display:none}#log{direction:ltr;text-align:left;white-space:pre-wrap;font-size:11px;color:#9ba3ad;max-height:180px;overflow:auto;background:#0a0d10;border:1px solid #2c3436;border-radius:8px;padding:8px}select,input,textarea{width:100%;background:#171c22;color:#eee;border:1px solid #303943;border-radius:9px;padding:9px;margin:3px 0}.row{display:grid;grid-template-columns:1fr 1fr;gap:7px}.memory{max-height:280px;overflow:auto}.item{border:1px solid #2c343d;border-radius:10px;padding:8px;margin:6px 0;background:#151a20}.mono{font-family:monospace;direction:ltr;text-align:left;font-size:10px}.tag{display:inline-block;border:1px solid #44505c;border-radius:6px;padding:2px 6px;margin:2px;font-size:10px}.verified{color:#8fe0b7;border-color:#3d8063}.candidate{color:#a9c8ec;border-color:#46698f}.failed{color:#e7a3a3;border-color:#873f3f}.unknown{color:#c4a89a;border-color:#554444}.status-ok{color:#90ee90}.status-err{color:#ff6b6b}
+</style></head><body><main>
+<h2>🎙️ RASTA v9 Universal Audio IR Remote</h2>
+<div class="small">Onkyo CR-185 • Sony CMT-E300HD • Victor/JVC NX-TC5-B • Pioneer P700 Mini Hi-Fi</div>
+<div class="tabs"><button class="tab active" onclick="show('o',this)">ONKYO</button><button class="tab" onclick="show('s',this)">SONY</button><button class="tab" onclick="show('j',this)">JVC</button><button class="tab" onclick="show('p',this)">PIONEER</button></div>
+<div class="panel"><div class="title">وضعیت IR</div><div id="status">...</div></div>
+
+<section id="o"><div class="panel"><div class="title">Onkyo CR-185/CR-185X — Remote RC-332S</div><div class="small">✓ VERIFIED: Known codes from official documentation</div><div class="grid" id="og"></div></div><div class="panel"><div class="title">Sound Controls</div><div class="grid" id="osound"></div></div></section>
+
+<section id="s" class="hidden"><div class="panel"><div class="title">Sony CMT-E300HD — Remote RM-E02D</div><div class="small">⚠ CANDIDATE: Generic SIRC codes (Address 16, 40kHz) — Not model-verified. Test and mark VERIFIED after physical confirmation.</div><div class="grid" id="sg"></div></div><div class="panel"><div class="title">Sound Controls</div><div class="grid" id="ssound"></div></div></section>
+
+<section id="j" class="hidden"><div class="panel"><div class="title">Victor/JVC NX-TC5-B — Remote RM-SNXTC5-S</div><div class="small">⚠ UNKNOWN: JVC 37.9kHz format is documented, but NX-TC5 model-specific codes were not found. Use Code Lab for discovery.</div><div class="grid" id="jg"></div></div><div class="panel"><div class="title">Sound Controls</div><div class="grid" id="jsound"></div></div></section>
+
+<section id="p" class="hidden"><div class="panel"><div class="title">Pioneer Private SELFIE P700 — Remote CU-AP015</div><div class="small">⚠ UNKNOWN: CU-AP015 IR command table was not found. All controls require Code Lab discovery and testing. Components: A-P700, PD-P700, CT-P700WR, GR-P700, F-P700.</div><div class="grid" id="pg"></div></div><div class="panel"><div class="title">Sound Controls</div><div class="grid" id="psound"></div></div></section>
+
+<div class="panel"><div class="title">Code Lab — Manual IR Test & Discovery</div><div class="row"><select id="pr"><option>SONY</option><option>JVC</option><option>NEC</option></select><input id="hz" value="40000" placeholder="Carrier Hz"></div><div class="row"><input id="a" value="16" placeholder="Address/Custom"><input id="b" value="12" placeholder="Bits"></div><div class="row"><input id="c" value="18" placeholder="Command/Data"><input id="rep" value="1" placeholder="Repeat"></div><button class="btn warn" onclick="raw()">TEST SEND</button><div class="small">Protocol: SONY (A=Addr, B=12/15/20, C=Cmd) | JVC (A=Custom, B=ignored, C=Data) | NEC (A,B,C)</div><div class="row"><input id="saveName" placeholder="Button Name"><select id="saveState"><option value="candidate">CANDIDATE</option><option value="verified">VERIFIED</option><option value="failed">FAILED</option></select></div><button class="btn ok" onclick="saveCurrent()">💾 Save Code</button><div id="last" class="small"></div></div>
+
+<div class="panel"><div class="title">Database & Backup</div><div class="row"><button class="btn ok" onclick="exportDB()">📤 Export</button><button class="btn" onclick="copyDB()">📋 Copy</button></div><div class="row"><button class="btn danger" onclick="clearDB()">Clear</button><button class="btn" onclick="renderMemory()">Refresh</button></div><input id="importFile" type="file" accept=".json" onchange="importFile(this)"><div id="memory" class="memory"></div></div>
+<div class="panel"><div class="title">Log</div><div id="log"></div></div>
+</main><script>
+const O={POWER:[210,109,4],MUTE:[210,109,5],'VOL+':[210,109,2],'VOL-':[210,109,3],CD:[210,109,9],TUNER:[210,109,11],TAPE:[210,109,8],TAPE2:[210,109,7],PLAY:[210,109,27],STOP:[210,109,28],NEXT:[210,109,29],PREV:[210,109,30],PAUSE:[210,109,31],DIRECT:[210,109,68],SLEEP:[210,109,93],UP:[210,109,130],DOWN:[210,109,131],LEFT:[210,109,132],RIGHT:[210,109,133],ENTER:[210,109,151],EJECT:[210,109,145]};
+const SC={POWER:21,'VOL+':18,'VOL-':19,MUTE:20,PLAY:46,STOP:47,PAUSE:48,REW:36,FF:37,NEXT:45,PREV:44,ENTER:11,'0':9,'1':0,'2':1,'3':2,'4':3,'5':4,'6':5,'7':6,'8':7,'9':8};
+const OSOUND=[['TONE','TONE'],['BASS','BASS'],['TREBLE','TREBLE'],['BALANCE','BAL'],['S.BASS','SBASS'],['DIRECT','DIRECT']];
+const SSOUND=[['M.BASS','MBASS'],['PRESET EQ','EQ']];
+const JSOUND=[['AHB PRO','AHB'],['SOUND MODE','MODE'],['TREBLE','TREBLE'],['BASS','BASS']];
+const PSOUND=[['TONE','TONE'],['VOLUME','VOL'],['BASS','BASS'],['TREBLE','TREBLE']];
+const PG=['POWER','CD','USB','FM/AM','TUNER','AUX','PLAY','STOP','NEXT','PREV','VOLUME','MUTE','SLEEP'];
+let DB={};
+try{DB=JSON.parse(AudioIR.loadDb()||'{}')}catch(e){DB={}};
+function log(x){let e=document.getElementById('log');e.textContent=new Date().toLocaleTimeString()+' '+x+'\n'+(e.textContent||'');}
+function saveDB(){AudioIR.saveDb(JSON.stringify(DB));}
+function key(){return 'id_'+Date.now()+'_'+Math.random().toString(16).slice(2);}
+function addRec(name,device,proto,a,b,c,hz,status,source){let r={id:key(),time:new Date().toISOString(),name,device,proto,address:a,bits:b,command:c,carrier:hz,status,source};DB[r.id]=r;saveDB();renderMemory();return r;}
+function sendOnkyo(k){let x=O[k];let res=AudioIR.send('NEC',x[0],x[1],x[2],38000,15);log('ONKYO '+k+' => '+res);document.getElementById('last').textContent='Last: '+k+' / '+res;}
+function sonyCandidate(name,addr,cmd){let res=AudioIR.send('SONY',addr,12,cmd,40000,12);log('SONY '+name+' => '+res);window.lastTest={name,device:'SONY',proto:'SONY',a:addr,b:12,c:cmd,hz:40000};}
+function raw(){let p=document.getElementById('pr').value,a=+document.getElementById('a').value,b=+document.getElementById('b').value,c=+document.getElementById('c').value,hz=+document.getElementById('hz').value;let res=AudioIR.send(p,a,b,c,hz,p==='SONY'?b:0);window.lastTest={name:document.getElementById('saveName').value||'TEST',device:p,proto:p,a,b,c,hz};log('RAW '+p+' => '+res);}
+function saveCurrent(){if(!window.lastTest){alert('Test a code first');return;}let t=window.lastTest;let st=document.getElementById('saveState').value;addRec(t.name,t.device,t.proto,t.a,t.b,t.c,t.hz,st,'user_tested');log('SAVED '+t.name+' ['+st+']');}
+function show(id,e){['o','s','j','p'].forEach(x=>{let el=document.getElementById(x);if(el)el.classList.toggle('hidden',x!==id);});document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));e.classList.add('active');}
+function exportText(){let arr=Object.values(DB);let out='RASTA IR DATABASE\nv9\nExported: '+new Date().toISOString()+'\n\n';arr.forEach(r=>{out+=r.name+' | '+r.device+' | '+r.status+'\nProto: '+r.proto+' | A: '+r.address+' | C: '+r.command+' | Hz: '+r.carrier+' | Src: '+r.source+'\n\n';});out+='RAW_JSON\n'+JSON.stringify(DB,null,2);return out;}
+function exportDB(){AudioIR.exportDb(exportText());log('Export opened');}
+function copyDB(){AudioIR.copyDb(exportText());log('Database copied');}
+function importFile(input){const f=input.files&&input.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const t=String(r.result);const j=t.includes('RAW_JSON')?JSON.parse(t.split('RAW_JSON')[1].trim()):JSON.parse(t);DB={...DB,...j};saveDB();renderMemory();log('Imported '+Object.keys(j).length+' records');alert('Database imported');}catch(e){alert('Invalid JSON');}};r.readAsText(f);}
+function clearDB(){if(confirm('Clear all codes?')){DB={};AudioIR.clearDb();renderMemory();log('Database cleared');}}
+function del(id){delete DB[id];saveDB();renderMemory();}
+function renderMemory(){let el=document.getElementById('memory'),arr=Object.values(DB).reverse();if(!arr.length){el.innerHTML='<div class="small">No codes saved yet.</div>';return;}el.innerHTML=arr.map(r=>`<div class="item"><b>${r.name}</b> <span class="tag ${r.status}">${r.status}</span><div class="small">${r.device} • ${r.proto} • A:${r.address} C:${r.command} • ${r.bits}b • ${r.carrier}Hz • ${r.source}</div><button class="btn danger" onclick="del('${r.id}')">×</button></div>`).join('');
+}
+og.innerHTML=Object.keys(O).map(k=>`<button class="btn ok" onclick="sendOnkyo('${k}')">${k}</button>`).join('');
+sg.innerHTML=Object.keys(SC).map(k=>`<button class="btn cand" onclick="sonyCandidate('${k}',16,${SC[k]})">${k}</button>`).join('');
+jg.innerHTML=['POWER','CD','PLAY','STOP','VOL+','VOL-','MUTE'].map(k=>`<button class="btn unknown" onclick="log('JVC ${k} - Use Code Lab')">${k}</button>`).join('');
+pg.innerHTML=PG.map(k=>`<button class="btn unknown" onclick="log('Pioneer ${k} - Use Code Lab')">${k}</button>`).join('');
+osound.innerHTML=OSOUND.map(x=>`<button class="btn cand" onclick="log('Onkyo ${x[0]} - Use Code Lab')">${x[0]}</button>`).join('');
+ssound.innerHTML=SSOUND.map(x=>`<button class="btn cand" onclick="log('Sony ${x[0]} - Use Code Lab')">${x[0]}</button>`).join('');
+jsound.innerHTML=JSOUND.map(x=>`<button class="btn unknown" onclick="log('JVC ${x[0]} - Use Code Lab')">${x[0]}</button>`).join('');
+psound.innerHTML=PSOUND.map(x=>`<button class="btn unknown" onclick="log('Pioneer ${x[0]} - Use Code Lab')">${x[0]}</button>`).join('');
+let irStatus='UNKNOWN';
+try{irStatus=AudioIR.hasIR()?'✓ IR Emitter: '+AudioIR.getCarrierHz()+' Hz':'✗ No IR Emitter (Test codes will fail)'}catch(e){irStatus='⚠ Bridge error'}
+document.getElementById('status').textContent=irStatus;
+renderMemory();
+</script></body></html>
