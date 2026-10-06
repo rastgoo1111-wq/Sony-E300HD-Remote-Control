@@ -4,5 +4,3 @@
 -keep class android.hardware.ConsumerIrManager { *; }
 -keep class com.ehsan.onkyo185.MainActivity { *; }
 -keep class com.ehsan.onkyo185.MainActivity$Bridge { *; }
--keepattributes SourceFile,LineNumberTable
--renamesourcefileattribute SourceFile

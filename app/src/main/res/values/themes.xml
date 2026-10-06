@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="android:Theme.Material">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="android:colorBackground">#080a0d</item>
-        <item name="android:colorForeground">#f4f4f4</item>
-        <item name="android:colorAccent">#d6a43a</item>
         <item name="android:statusBarColor">#080a0d</item>
         <item name="android:navigationBarColor">#080a0d</item>
     </style>
